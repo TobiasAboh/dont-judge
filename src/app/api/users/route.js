@@ -36,3 +36,20 @@ export async function POST(request) {
     });
   }
 }
+
+export async function GET(request) {
+  try {
+    console.log("Hello");
+    const {username} = await request.json();
+    const user = await User.findOne({username});
+    const messages = user.messages;
+    return NextResponse.json({
+      messages
+    });
+  } catch (error) {
+    return NextResponse.json({
+      message: "Error creating user",
+      error,
+    });
+  }
+}

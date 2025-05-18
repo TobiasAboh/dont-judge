@@ -9,8 +9,8 @@ export default function PageWrapper({ children }) {
         <motion.div
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: 50 }}
-          transition={{ duration: 0.5, staggerChildren: 100 }}
+          // exit={{ opacity: 0, y: 50 }}
+          transition={{ duration: 0.6, staggerChildren: 0.3 }}
         >
           {children}
         </motion.div>

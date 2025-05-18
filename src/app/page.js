@@ -23,14 +23,14 @@ export default function Home() {
     const response = await fetch("/api/users", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ id: `${username}${Date.now()}`, username: name, messages: [] }),
+      body: JSON.stringify({username: `${name}${Date.now()}`, messages: [] }),
     });
 
     if (response.ok) {
       const data = await response.json();
       // setUsers(data.users);
       setId(`${data.newUser.id}`);
-      router.push(`/user/${data.newUser.id}`);
+      router.push(`/user/${data.newUser.username}`);
     }
   };
 

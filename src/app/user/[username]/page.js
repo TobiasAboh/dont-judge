@@ -4,6 +4,20 @@ import React, { useState, useEffect } from "react";
 
 import PageWrapper from "@/app/pageWrapper";
 
+const variants = {
+  hidden: { opacity: 0 },
+  show: { opacity: 1, transition: { staggerChildren: 0.9 } },
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 50 },
+  show: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.6 },
+  },
+};
+
 export default function UserPage({ params }) {
   const { username } = React.use(params);
 
@@ -13,35 +27,37 @@ export default function UserPage({ params }) {
   const [confessions, setConfessions] = useState([]);
 
   useEffect(() => {
+    const fetchMessages = async () => {
+      try {
+        const response = await fetch(`/api/users/${username}/messages`)
+  
+        if (response.ok) {
+          const data = await response.json();
+          // console.log(data);
+          setConfessions(data);
+        }
+      } catch (error) {
+        console.error("Error fetching messages", error);
+      }
+    };
+
     fetchMessages();
-  }, []);
+    const interval = setInterval(fetchMessages, 5000);
+
+    return() => clearInterval(interval)
+  }, [username]);
 
   const copyToCLipboard = async () => {
-    try{
+    try {
       navigator.clipboard.writeText(`${window.location.href}/sendMessage`);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
-    }
-    catch(error){
-      console.log(`failed to copy to clipboard`, error)
-    }
-  }
-
-  const fetchMessages = async () => {
-    try {
-      const response = await fetch(`/api/messages/${username}`, {
-        method: "GET",
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        // console.log(data);
-        setConfessions(data);
-      }
     } catch (error) {
-      console.error("Error fetching messages", error);
+      console.log(`failed to copy to clipboard`, error);
     }
   };
+
+  
   return (
     <>
       <header>
@@ -57,61 +73,66 @@ export default function UserPage({ params }) {
           </motion.h1>
         </AnimatePresence>
       </header>
-      <PageWrapper>
-        <div className="flex flex-col w-full justify-center items-center gap-4 mt-8">
-          <motion.div
+      {/* <PageWrapper> */}
+      <div className="flex flex-col w-full justify-center items-center gap-4 mt-8">
+        <motion.div
           onClick={copyToCLipboard}
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
-            type="submit"
-            className="rounded-3xl border-2 px-7 py-2 shadow-xl cursor-pointer"
-          >
-            {copied ? "Copied to Clipboard" : (`Copy Link: ${username}`)}
-          </motion.div>
-        </div>
-        <div className="flex flex-col mt-16 h-screen">
-          <h2 className="text-xl text-center font-bold text-white">
-            Confessions
-          </h2>
-          <div
-            className="grid gap-5 justify-center pt-4 px-4 border-t overflow-y-auto h-full"
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
-            }}
-          >
-            {confessions.map((text, index) => (
-              <motion.div
-                whileHover={{ scale: 1.1 }}
-                onClick={() => {
-                  setSelectedCard(text);
-                }}
-                key={index}
-                layoutId={`card ${index}`}
-                className="text-gray-500 flex items-center justify-center cursor-pointer text-center h-36 text-sm md:text-base lg:text-lg font-bold bg-white rounded-xl px-2"
-              >
-                {text.message}
-              </motion.div>
-            ))}
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.9 }}
+          type="submit"
+          className="rounded-3xl border-2 px-7 py-2 shadow-xl cursor-pointer"
+        >
+          {copied ? "Copied to Clipboard" : `Copy Link: ${username}`}
+        </motion.div>
+      </div>
+      <div className="flex flex-col mt-16 h-screen">
+        <h2 className="text-xl text-center font-bold text-white">
+          Confessions
+        </h2>
+        <motion.div
+          variants={variants}
+          className="grid gap-5 justify-center pt-4 px-6 border-t overflow-y-auto h-full"
+          initial="hidden"
+          animate="show"
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fill, minmax(250px, 1fr))",
+            gridTemplateRows: "repeat(auto-fill, minmax(200px, 1fr))",
+          }}
+        >
+          {confessions.map((text, index) => (
+            <motion.div
+              variants={itemVariants}
+              whileHover={{ scale: 1.1 }}
+              onClick={() => {
+                setSelectedCard(text);
+              }}
+              key={index}
+              layoutId={`card ${index}`}
+              className="text-gray-500 max-w-86 flex items-center justify-center cursor-pointer text-center h-52 text-sm md:text-base lg:text-lg font-bold bg-white rounded-xl px-1"
+            >
+              {text.message}
+            </motion.div>
+          ))}
 
-            <AnimatePresence>
-              {selectedCard !== null && (
+          <AnimatePresence>
+            {selectedCard !== null && (
+              <motion.div
+                onClick={() => setSelectedCard(null)}
+                className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50"
+              >
                 <motion.div
-                  onClick={() => setSelectedCard(null)}
-                  className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50"
+                  layoutId={`card ${selectedCard.id - 1}`}
+                  className="flex items-center justify-center text-center w-96 mx-6 lg:w-96 h-96 text-sm md:text-base lg:text-lg font-bold bg-white rounded-xl px-2 opacity-full"
                 >
-                  <motion.div
-                    layoutId={`card ${selectedCard.id - 1}`}
-                    className="flex items-center justify-center text-center w-96 mx-6 lg:w-96 h-96 text-sm md:text-base lg:text-lg font-bold bg-white rounded-xl px-2 opacity-full"
-                  >
-                    {selectedCard.message}
-                  </motion.div>
+                  {selectedCard.message}
                 </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
-        </div>
-      </PageWrapper>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </motion.div>
+      </div>
+      {/* </PageWrapper> */}
     </>
   );
 }
