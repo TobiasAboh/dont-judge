@@ -13,7 +13,7 @@ export default function MessagePage({ params }) {
 
   const sendMessage = async (e) => {
     e.preventDefault();
-    const response = await fetch(`/api/messages/${username}`, {
+    const response = await fetch(`/api/users/${username}/user`, {
       method: "PUT",
       headers: { "Content-type": "application/json" },
       body: JSON.stringify({ message: confession }),
@@ -21,6 +21,7 @@ export default function MessagePage({ params }) {
 
     if (response.ok) {
       const data = await response.json();
+      console.log("---------------START-----------------")
       console.log(data.message, data.error);
       setMessageCount(messageCount + 1);
       setConfession("");

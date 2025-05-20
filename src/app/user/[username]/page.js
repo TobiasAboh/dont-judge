@@ -21,7 +21,7 @@ const itemVariants = {
 export default function UserPage({ params }) {
   const { username } = React.use(params);
 
-  const [selectedCard, setSelectedCard] = useState(null);
+  const [selectedCardId, setSelectedCardId] = useState(null);
   const [copied, setCopied] = useState(false);
 
   const [confessions, setConfessions] = useState([]);
@@ -29,12 +29,12 @@ export default function UserPage({ params }) {
   useEffect(() => {
     const fetchMessages = async () => {
       try {
-        const response = await fetch(`/api/users/${username}/messages`)
-  
+        const response = await fetch(`/api/users/${username}/messages`);
+
         if (response.ok) {
           const data = await response.json();
-          // console.log(data);
-          setConfessions(data);
+          setConfessions(data.messages);
+          console.log(data.messages, confessions);
         }
       } catch (error) {
         console.error("Error fetching messages", error);
@@ -44,16 +44,30 @@ export default function UserPage({ params }) {
     fetchMessages();
     const interval = setInterval(fetchMessages, 5000);
 
-    return() => clearInterval(interval)
+    return () => clearInterval(interval);
   }, [username]);
 
   const copyToCLipboard = async () => {
+    const link = `${window.location.href}/sendMessage`;
     try {
-      navigator.clipboard.writeText(`${window.location.href}/sendMessage`);
+      if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(link);
+      } else {
+        // fallback for mobile (iOS etc.)
+        const textArea = document.createElement("textarea");
+        textArea.value = link;
+        textArea.style.position = "fixed"; // avoid scroll jump
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        document.execCommand("copy");
+        document.body.removeChild(textArea);
+      }
+
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch (error) {
-      console.log(`failed to copy to clipboard`, error);
+      console.error("Failed to copy: ", error);
     }
   };
 
@@ -69,21 +83,21 @@ export default function UserPage({ params }) {
             transition={{ duration: 0.5 }}
             className="text-2xl md:text-4xl lg:text-5xl font-bold text-center"
           >
-            ####################
+            We Listen We Don't Judge
           </motion.h1>
         </AnimatePresence>
       </header>
       {/* <PageWrapper> */}
       <div className="flex flex-col w-full justify-center items-center gap-4 mt-8">
-        <motion.div
-          onClick={copyToCLipboard}
+        <motion.button
+          onTap={copyToCLipboard}
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
           type="submit"
           className="rounded-3xl border-2 px-7 py-2 shadow-xl cursor-pointer"
         >
           {copied ? "Copied to Clipboard" : `Copy Link: ${username}`}
-        </motion.div>
+        </motion.button>
       </div>
       <div className="flex flex-col mt-16 h-screen">
         <h2 className="text-xl text-center font-bold text-white">
@@ -105,27 +119,27 @@ export default function UserPage({ params }) {
               variants={itemVariants}
               whileHover={{ scale: 1.1 }}
               onClick={() => {
-                setSelectedCard(text);
+                setSelectedCardId(index);
               }}
               key={index}
-              layoutId={`card ${index}`}
+              layoutId={`card-${index}`}
               className="text-gray-500 max-w-86 flex items-center justify-center cursor-pointer text-center h-52 text-sm md:text-base lg:text-lg font-bold bg-white rounded-xl px-1"
             >
-              {text.message}
+              {text}
             </motion.div>
           ))}
 
           <AnimatePresence>
-            {selectedCard !== null && (
+            {selectedCardId !== null && (
               <motion.div
-                onClick={() => setSelectedCard(null)}
-                className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50"
+                onClick={() => setSelectedCardId(null)}
+                className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
               >
                 <motion.div
-                  layoutId={`card ${selectedCard.id - 1}`}
+                  layoutId={`card-${selectedCardId}`}
                   className="flex items-center justify-center text-center w-96 mx-6 lg:w-96 h-96 text-sm md:text-base lg:text-lg font-bold bg-white rounded-xl px-2 opacity-full"
                 >
-                  {selectedCard.message}
+                  {confessions[selectedCardId]}
                 </motion.div>
               </motion.div>
             )}

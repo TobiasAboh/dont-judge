@@ -20,7 +20,7 @@ export default function Home() {
   // }, []);
 
   const addUser = async (name) => {
-    const response = await fetch("/api/users", {
+    const response = await fetch(`/api/users/${name}${Date.now()}/user`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({username: `${name}${Date.now()}`, messages: [] }),
@@ -29,7 +29,7 @@ export default function Home() {
     if (response.ok) {
       const data = await response.json();
       // setUsers(data.users);
-      setId(`${data.newUser.id}`);
+      setId(`${data.newUser.username}`);
       router.push(`/user/${data.newUser.username}`);
     }
   };
@@ -45,7 +45,7 @@ export default function Home() {
             transition={{ duration: 0.5 }}
             className="text-2xl md:text-4xl lg:text-5xl font-bold text-center mb-36"
           >
-            ## #### ### #### ###
+            We Listen We Don't Judge
           </motion.h1>
         </AnimatePresence>
       </header>
