@@ -4,18 +4,37 @@ import { NextResponse } from "next/server";
 import connectDB from "@/lib/mongodb";
 
 import User from "@/models/User";
+import { start } from "repl";
+import { create } from "domain";
 
 const filePath = path.join(process.cwd(), "data", "userData.json");
+
+const convertDateToISO = () => {
+  return new Date(Date.now() - 5 * 60 * 60 * 1000);
+}
 
 export async function POST(request) {
   try {
     await connectDB();
     console.log("connected to db");
-    const {username, messages} = await request.json();
+    const {username, messages, timer, startTime, duration} = await request.json();
+    console.log("Adding user:", username, "with timer:", startTime, duration);
+    const findUser = await User.findOne({ username: username });
+
+    if (findUser) {
+      return NextResponse.json({exist: !!findUser, message: "Username is already taken" });
+    }
+    
     const user = await User.create({
       username,
+      expiresAfter: convertDateToISO(), // Set expiration based on duration
       messages,
+      timer,
+      startTime,
+      duration,
+       // Set expiration based on duration
     });
+    
     return NextResponse.json({
       message: "User added successfully",
       newUser: user,

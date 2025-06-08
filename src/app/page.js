@@ -5,11 +5,13 @@ import PageWrapper from "./pageWrapper";
 import userData from "../../data/userData.json";
 import { motion, animate, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
+import TimerDropdown from "@/components/timerDropdown";
 
 export default function Home() {
   const [id, setId] = useState();
   const [username, setUsername] = useState();
   const [users, setUsers] = useState();
+  const [timer, setTimer] = useState(1);
 
   const router = useRouter();
 
@@ -20,19 +22,31 @@ export default function Home() {
   // }, []);
 
   const addUser = async (name) => {
-    const response = await fetch(`/api/users/${name}${Date.now()}/user`, {
+    console.log("Adding user:", name, "with timer:", timer);
+    const response = await fetch(`/api/users/${name}/user`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({username: `${name}${Date.now()}`, messages: [] }),
+      body: JSON.stringify({ username: `${name}`, messages: [], timer: timer, startTime: Date.now(), duration: timer * 3600 }),
     });
 
     if (response.ok) {
       const data = await response.json();
       // setUsers(data.users);
-      setId(`${data.newUser.username}`);
-      router.push(`/user/${data.newUser.username}`);
+      if (!data.exist) {
+        console.log("User added successfully:", data);
+        setId(`${data.newUser.username}`);
+        localStorage.setItem("username", data.newUser.username);
+        localStorage.setItem("timer", timer);
+        router.push(`/user/${data.newUser.username}`);
+      } else {
+        alert("Username already taken");
+      }
     }
   };
+
+  useEffect(() => {
+    console.log("Timer set to:", timer);
+  }, [timer]);
 
   return (
     <>
@@ -50,24 +64,27 @@ export default function Home() {
         </AnimatePresence>
       </header>
       <PageWrapper>
-        <div className="flex flex-col md:flex-row w-full justify-center items-center gap-4">
-          <motion.input
-            // whileHover={{ scale: 1.1 }}
-            onChange={(e) => setUsername(e.target.value)}
-            transition={{ duration: 0.5 }}
-            type="text"
-            placeholder="Create username to start"
-            className="rounded-3xl border-2 px-4 py-2 w-8/12 md:w-6/12 lg:w-5/12 shadow-xl text-sm"
-          ></motion.input>
-          <motion.button
-            onClick={() => addUser(username)}
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
-            type="submit"
-            className="rounded-3xl border-2 px-7 py-2 shadow-xl"
-          >
-            Start
-          </motion.button>
+        <div className="flex flex-col justify-center items-center">
+          <div className="flex flex-col md:flex-row w-full justify-center items-center gap-4">
+            <motion.input
+              // whileHover={{ scale: 1.1 }}
+              onChange={(e) => setUsername(e.target.value)}
+              transition={{ duration: 0.5 }}
+              type="text"
+              placeholder="Create username to start"
+              className="rounded-3xl border-2 px-4 py-2 w-8/12 md:w-6/12 lg:w-5/12 shadow-xl text-sm"
+            ></motion.input>
+            <motion.button
+              onClick={() => addUser(username)}
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+              type="submit"
+              className="rounded-3xl border-2 px-7 py-2 shadow-xl"
+            >
+              Start
+            </motion.button>
+          </div>
+          <TimerDropdown setTimer={setTimer} />
         </div>
       </PageWrapper>
     </>

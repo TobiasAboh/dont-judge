@@ -1,8 +1,9 @@
 "use client";
 import { motion, AnimatePresence, animate } from "framer-motion";
 import React, { useState, useEffect } from "react";
-
+import { useRouter } from "next/navigation";
 import PageWrapper from "@/app/pageWrapper";
+import CountdownTimer from "@/components/countdownTimer";
 
 const variants = {
   hidden: { opacity: 0 },
@@ -20,11 +21,13 @@ const itemVariants = {
 
 export default function UserPage({ params }) {
   const { username } = React.use(params);
+  const [timer, setTimer] = useState(localStorage.getItem("timer"));
 
   const [selectedCardId, setSelectedCardId] = useState(null);
   const [copied, setCopied] = useState(false);
 
   const [confessions, setConfessions] = useState([]);
+  const router = useRouter();
 
   useEffect(() => {
     const fetchMessages = async () => {
@@ -34,7 +37,7 @@ export default function UserPage({ params }) {
         if (response.ok) {
           const data = await response.json();
           setConfessions(data.messages);
-          console.log(data.messages, confessions);
+          // console.log(data.messages, confessions);
         }
       } catch (error) {
         console.error("Error fetching messages", error);
@@ -71,7 +74,26 @@ export default function UserPage({ params }) {
     }
   };
 
-  
+  const handleTimeUp = async () => {
+    try {
+      console.log("Time is up, deleting user:", username);
+      const response = await fetch(`/api/delete-user`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username: username }),
+      });
+
+      const data = await response.json();
+      if (data.success) {
+        console.log("User deleted successfully");
+        // Optionally redirect or show a message
+        router.push('/')
+      }
+    } catch (error) {
+      console.error("Error deleting user:", error);
+    }
+  };
+
   return (
     <>
       <header>
@@ -100,9 +122,14 @@ export default function UserPage({ params }) {
         </motion.button>
       </div>
       <div className="flex flex-col mt-16 h-screen">
-        <h2 className="text-xl text-center font-bold text-white">
-          Confessions
-        </h2>
+        <div className="flex flex-row justify-center">
+          <button onClick={handleTimeUp} className="absolute px-2 z-10 rounded-3xl border-2 fixed left-4">End Confession Session</button>
+          <h2 className="text-xl text-center font-bold text-white">
+            Confessions
+          </h2>
+          <CountdownTimer hours={timer} minutes={0} seconds={0} onComplete={handleTimeUp} />
+        </div>
+
         <motion.div
           variants={variants}
           className="grid gap-5 justify-center pt-4 px-6 border-t overflow-y-auto h-full"
