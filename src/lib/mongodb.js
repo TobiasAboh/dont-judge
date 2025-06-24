@@ -14,19 +14,19 @@ if (!cached) {
 
 async function connectDB() {
   if (cached.conn) {
-    console.log("Using existing database connection");
+    // console.log("Using existing database connection");
     return cached.conn;
   }
   if (!cached.promise) {
-    console.log("Connecting to MongoDB...");
+    // console.log("Connecting to MongoDB...");
     cached.promise = mongoose
       .connect(MONGODB_URI)
       .then((mongoose) => {
-        console.log("Connected to MongoDB");
+        // console.log("Connected to MongoDB");
         return mongoose;
       })
       .catch((error) => {
-        console.log("MongoDB connection error", error);
+        // console.log("MongoDB connection error", error);
         throw error;
       });
   }

@@ -5,7 +5,7 @@ export async function GET(req, { params }) {
     try {
         await connectDB();
         const { id } = await params;
-        console.log("User Name:", id);
+        // console.log("User Name:", id);
         const user = await User.findOne({ username: id }).select("messages");
         if (!user) {
             return NextResponse.json({ error: 'User not found' }, { status: 404 });

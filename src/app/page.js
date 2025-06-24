@@ -22,18 +22,22 @@ export default function Home() {
   // }, []);
 
   const addUser = async (name) => {
-    console.log("Adding user:", name, "with timer:", timer);
+    // console.log("Adding user:", name, "with timer:", timer);
+    if (!name || name.trim() === "") {
+      alert("Please enter a valid username");
+      return;
+    }
     const response = await fetch(`/api/users/${name}/user`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ username: `${name}`, messages: [], timer: timer, startTime: Date.now(), duration: timer * 3600 }),
+      body: JSON.stringify({ username: `${name.trim()}`, messages: [], timer: timer, startTime: Date.now(), duration: timer * 3600 }),
     });
 
     if (response.ok) {
       const data = await response.json();
       // setUsers(data.users);
       if (!data.exist) {
-        console.log("User added successfully:", data);
+        // console.log("User added successfully:", data);
         setId(`${data.newUser.username}`);
         localStorage.setItem("username", data.newUser.username);
         localStorage.setItem("timer", timer);
@@ -44,9 +48,6 @@ export default function Home() {
     }
   };
 
-  useEffect(() => {
-    console.log("Timer set to:", timer);
-  }, [timer]);
 
   return (
     <>
@@ -64,22 +65,22 @@ export default function Home() {
         </AnimatePresence>
       </header>
       <PageWrapper>
-        <div className="flex flex-col justify-center items-center">
-          <div className="flex flex-col md:flex-row w-full justify-center items-center gap-4">
+        <div className="flex flex-col justify-center items-center gap-4 md:gap-2">
+          <div className="flex flex-col md:flex-row justify-center items-center gap-4 w-8/12 md:w-6/12 lg:w-5/12">
             <motion.input
               // whileHover={{ scale: 1.1 }}
               onChange={(e) => setUsername(e.target.value)}
               transition={{ duration: 0.5 }}
               type="text"
               placeholder="Create username to start"
-              className="rounded-3xl border-2 px-4 py-2 w-8/12 md:w-6/12 lg:w-5/12 shadow-xl text-sm"
+              className="rounded-3xl border-2 px-4 py-2 w-full shadow-xl text-sm"
             ></motion.input>
             <motion.button
               onClick={() => addUser(username)}
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
               type="submit"
-              className="rounded-3xl border-2 px-7 py-2 shadow-xl"
+              className="w-full md:w-auto rounded-3xl border-2 px-7 py-2 shadow-xl"
             >
               Start
             </motion.button>

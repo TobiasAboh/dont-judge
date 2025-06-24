@@ -14,7 +14,7 @@ async function run() {
     });
 
     await User.syncIndexes();
-    console.log('Indexes synced successfully.');
+    // console.log('Indexes synced successfully.');
 
     await mongoose.disconnect();
   } catch (error) {

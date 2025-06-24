@@ -1,44 +1,59 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
+import { useRouter } from "next/navigation";
 
 export default function CountdownTimer({
   hours,
   minutes,
   seconds,
+  timeUp = false,
   onComplete = () => {},
 }) {
   const [timeLeft, setTimeLeft] = useState(null);
+  const router = useRouter();
+  const hasAlerted = useRef(false);
 
   useEffect(() => {
     let interval;
-    const fetchTime = async () => {
-      const res = await fetch(
-        `/api/users/${localStorage.getItem("username")}/timer`
-      );
-      const data = await res.json();
+    const setupTimer = async () => {
+      interval = setInterval(async () => {
+        const res = await fetch(
+          `/api/users/${localStorage.getItem("username")}/timer`
+        );
 
-      if (!data || !data.startTime || !data.duration) {
-        setTimeLeft(0);
-        return;
-      }
+        if (res.status === 404) {
+          if (!hasAlerted.current) {
+            hasAlerted.current = true;
+            alert("Confession session for this user has ended.");
+            clearInterval(interval);
+            setTimeLeft(0);
+            router.push("/");
+          }
+        }
 
-      interval = setInterval(() => {
+        const data = await res.json();
         const now = Date.now();
         const elapsed = Math.floor((now - data.startTime) / 1000);
         const remaining = data.duration - elapsed;
-        console.log("Remaining time:", remaining);
-        if (remaining <= 0) {
+        if (remaining <= 0 || timeUp) {
           clearInterval(interval);
           setTimeLeft(0);
+          if(!hasAlerted.current) {
+            hasAlerted.current = true;
+            alert("The Confession session has ended.");
+          }
           onComplete();
         } else {
           setTimeLeft(remaining);
         }
       }, 1000);
     };
-    fetchTime();
+    if (!timeUp) {
+      setupTimer();
+    }
+
     return () => clearInterval(interval);
-  }, [timeLeft]);
+  }, [timeUp]);
 
   const formatTime = (secs) => {
     const h = Math.floor(secs / 3600);
@@ -51,7 +66,7 @@ export default function CountdownTimer({
 
   return (
     <>
-      <div className="absolute px-2 z-10 rounded-3xl border-2 fixed right-4">
+      <div className="px-2 z-10 rounded-3xl border-2 text-xs md:text-sm">
         <p>{formatTime(timeLeft)}</p>
       </div>
     </>

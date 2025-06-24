@@ -1,24 +1,22 @@
-import fs from "fs";
 import path from "path";
 import { NextResponse } from "next/server";
 import connectDB from "@/lib/mongodb";
 
 import User from "@/models/User";
-import { start } from "repl";
-import { create } from "domain";
+
 
 const filePath = path.join(process.cwd(), "data", "userData.json");
 
 const convertDateToISO = () => {
-  return new Date(Date.now() - 5 * 60 * 60 * 1000);
+  return new Date(Date.now() + 18 * 60 * 60 * 1000);
 }
 
 export async function POST(request) {
   try {
     await connectDB();
-    console.log("connected to db");
+    // console.log("connected to db");
     const {username, messages, timer, startTime, duration} = await request.json();
-    console.log("Adding user:", username, "with timer:", startTime, duration);
+    // console.log("Adding user:", username, "with timer:", startTime, duration);
     const findUser = await User.findOne({ username: username });
 
     if (findUser) {
@@ -59,10 +57,10 @@ export async function POST(request) {
 export async function GET(req, { params }) {
   try {
     await connectDB();
-    console.log("Connected to db");
+    // console.log("Connected to db");
 
     const { id } = await params;
-    console.log("User Name:", id);
+    // console.log("User Name:", id);
     const user = await User.findOne({ username: id });
 
     if (!user) {
@@ -78,7 +76,7 @@ export async function GET(req, { params }) {
 export async function PUT(req, { params }) {
   try {
     await connectDB();
-    console.log("Connected to db");
+    // console.log("Connected to db");
     const { id } = await params;
     const { message } = await req.json();
 

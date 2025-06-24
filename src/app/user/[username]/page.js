@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import PageWrapper from "@/app/pageWrapper";
 import CountdownTimer from "@/components/countdownTimer";
+import { set } from "mongoose";
 
 const variants = {
   hidden: { opacity: 0 },
@@ -22,7 +23,7 @@ const itemVariants = {
 export default function UserPage({ params }) {
   const { username } = React.use(params);
   const [timer, setTimer] = useState(localStorage.getItem("timer"));
-
+  const [timeUp, setTimeUp] = useState(false);
   const [selectedCardId, setSelectedCardId] = useState(null);
   const [copied, setCopied] = useState(false);
 
@@ -37,7 +38,11 @@ export default function UserPage({ params }) {
         if (response.ok) {
           const data = await response.json();
           setConfessions(data.messages);
-          // console.log(data.messages, confessions);
+  
+        }
+        else if (response.status === 404) {
+          // alert("Confession session for this user has ended.");
+          setTimeUp(true);
         }
       } catch (error) {
         console.error("Error fetching messages", error);
@@ -76,7 +81,7 @@ export default function UserPage({ params }) {
 
   const handleTimeUp = async () => {
     try {
-      console.log("Time is up, deleting user:", username);
+      // console.log("Time is up, deleting user:", username);
       const response = await fetch(`/api/delete-user`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -85,9 +90,8 @@ export default function UserPage({ params }) {
 
       const data = await response.json();
       if (data.success) {
-        console.log("User deleted successfully");
         // Optionally redirect or show a message
-        router.push('/')
+        router.push("/");
       }
     } catch (error) {
       console.error("Error deleting user:", error);
@@ -122,23 +126,36 @@ export default function UserPage({ params }) {
         </motion.button>
       </div>
       <div className="flex flex-col mt-16 h-screen">
-        <div className="flex flex-row justify-center">
-          <button onClick={handleTimeUp} className="absolute px-2 z-10 rounded-3xl border-2 fixed left-4">End Confession Session</button>
-          <h2 className="text-xl text-center font-bold text-white">
+        <div className="relative flex flex-row justify-center gap-4">
+          <h2 className="text-sm md:text-xl text-center font-bold text-white">
             Confessions
           </h2>
-          <CountdownTimer hours={timer} minutes={0} seconds={0} onComplete={handleTimeUp} />
+          <div className="flex flex-row justify-center gap-3 md:gap-0 md:justify-between w-full absolute bottom-10 md:bottom-0">
+            <button
+              onClick={handleTimeUp}
+              className="bg-red-500 hover:bg-white text-xs md:text-sm px-2 rounded-3xl border-2"
+            >
+              End Confession Session
+            </button>
+            <CountdownTimer
+              hours={timer}
+              minutes={0}
+              seconds={0}
+              timeUp={timeUp}
+              onComplete={handleTimeUp}
+            />
+          </div>
         </div>
 
         <motion.div
           variants={variants}
-          className="grid gap-5 justify-center pt-4 px-6 border-t overflow-y-auto h-full"
+          className="grid gap-5 justify-center pt-4 px-6 pb-5 border-t overflow-y-auto h-full"
           initial="hidden"
           animate="show"
           style={{
             display: "grid",
             gridTemplateColumns: "repeat(auto-fill, minmax(250px, 1fr))",
-            gridTemplateRows: "repeat(auto-fill, minmax(200px, 1fr))",
+            gridAutoRows: "1fr",
           }}
         >
           {confessions.map((text, index) => (
@@ -150,7 +167,7 @@ export default function UserPage({ params }) {
               }}
               key={index}
               layoutId={`card-${index}`}
-              className="text-gray-500 max-w-86 flex items-center justify-center cursor-pointer text-center h-52 text-sm md:text-base lg:text-lg font-bold bg-white rounded-xl px-1"
+              className="text-gray-500 h-52 md:h-full flex flex-col justify-center md:justify-center cursor-pointer text-center text-sm md:text-base lg:text-lg font-bold bg-white rounded-xl px-5 break-words whitespace-normal overflow-hidden"
             >
               {text}
             </motion.div>
@@ -164,7 +181,7 @@ export default function UserPage({ params }) {
               >
                 <motion.div
                   layoutId={`card-${selectedCardId}`}
-                  className="flex items-center justify-center text-center w-96 mx-6 lg:w-96 h-96 text-sm md:text-base lg:text-lg font-bold bg-white rounded-xl px-2 opacity-full"
+                  className="flex flex-col justify-center text-center w-96 mx-6 lg:w-96 h-96 text-sm md:text-base lg:text-lg font-bold bg-white rounded-xl px-2 opacity-full break-words whitespace-normal"
                 >
                   {confessions[selectedCardId]}
                 </motion.div>

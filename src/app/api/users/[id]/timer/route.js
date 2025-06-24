@@ -7,7 +7,6 @@ export async function GET(req, { params }) {
   try {
     await connectDB();
     const { id } = await params;
-    console.log("User Name:", id);
     const user = await User.findOne({ username: id });
 
     if (!user) {

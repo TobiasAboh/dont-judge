@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 const convertDateToISO = () => {
-  return new Date(Date.now() - 5 * 60 * 60 * 1000);
+  return new Date(Date.now() + 18 * 60 * 60 * 1000);
 }
 
 
