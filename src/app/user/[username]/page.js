@@ -167,7 +167,7 @@ export default function UserPage({ params }) {
               }}
               key={index}
               layoutId={`card-${index}`}
-              className="text-gray-500 h-52 md:h-full flex flex-col justify-center md:justify-center cursor-pointer text-center text-sm md:text-base lg:text-lg font-bold bg-white rounded-xl px-5 break-words whitespace-normal overflow-hidden"
+              className="text-gray-500 h-52 md:h-72 flex flex-col justify-center md:justify-center cursor-pointer text-center text-sm md:text-base lg:text-lg font-bold bg-white rounded-xl px-5 break-words whitespace-normal overflow-hidden"
             >
               {text}
             </motion.div>
