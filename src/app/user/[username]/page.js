@@ -2,9 +2,9 @@
 import { motion, AnimatePresence, animate } from "framer-motion";
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import PageWrapper from "@/app/pageWrapper";
 import CountdownTimer from "@/components/countdownTimer";
-import { set } from "mongoose";
+
+import LoadingScreen from "@/components/loadingScreen";
 
 const variants = {
   hidden: { opacity: 0 },
@@ -26,6 +26,7 @@ export default function UserPage({ params }) {
   const [timeUp, setTimeUp] = useState(false);
   const [selectedCardId, setSelectedCardId] = useState(null);
   const [copied, setCopied] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const [confessions, setConfessions] = useState([]);
   const router = useRouter();
@@ -38,9 +39,7 @@ export default function UserPage({ params }) {
         if (response.ok) {
           const data = await response.json();
           setConfessions(data.messages);
-  
-        }
-        else if (response.status === 404) {
+        } else if (response.status === 404) {
           // alert("Confession session for this user has ended.");
           setTimeUp(true);
         }
@@ -80,6 +79,7 @@ export default function UserPage({ params }) {
   };
 
   const handleTimeUp = async () => {
+    setLoading(true);
     try {
       // console.log("Time is up, deleting user:", username);
       const response = await fetch(`/api/delete-user`, {
@@ -95,9 +95,13 @@ export default function UserPage({ params }) {
       }
     } catch (error) {
       console.error("Error deleting user:", error);
+    } finally {
+      setLoading(false);
     }
   };
-
+  if (loading) {
+    return <LoadingScreen text="Closing confession session" />;
+  }
   return (
     <>
       <header>
@@ -126,7 +130,7 @@ export default function UserPage({ params }) {
         </motion.button>
       </div>
       <div className="flex flex-col mt-16 h-screen">
-        <div className="relative flex flex-row justify-center gap-4">
+        <div className="relative flex flex-row justify-center gap-4 border-b">
           <h2 className="text-sm md:text-xl text-center font-bold text-white">
             Confessions
           </h2>
@@ -147,48 +151,56 @@ export default function UserPage({ params }) {
           </div>
         </div>
 
-        <motion.div
-          variants={variants}
-          className="grid gap-4 justify-start pt-4 px-6 pb-5 border-t overflow-y-auto max-h-[96vh]"
-          initial="hidden"
-          animate="show"
-          style={{
-            // display: "grid",
-            gridTemplateColumns: "repeat(auto-fill, minmax(250px, 1fr))",
-            // gridAutoRows: "1fr",
-          }}
-        >
-          {confessions.map((text, index) => (
-            <motion.div
-              variants={itemVariants}
-              whileHover={{ scale: 1.1 }}
-              onClick={() => {
-                setSelectedCardId(index);
-              }}
-              key={index}
-              layoutId={`card-${index}`}
-              className="text-gray-500 h-52 md:h-72 flex flex-col justify-center md:justify-center cursor-pointer text-center text-sm md:text-base lg:text-lg font-bold bg-white rounded-xl px-5 break-words whitespace-normal overflow-hidden"
-            >
-              {text}
-            </motion.div>
-          ))}
-
-          <AnimatePresence>
-            {selectedCardId !== null && (
+        {confessions.length > 0 ? (
+          <motion.div
+            variants={variants}
+            className="grid gap-4 justify-start pt-4 px-6 pb-5 border-t overflow-y-auto max-h-[96vh]"
+            initial="hidden"
+            animate="show"
+            style={{
+              // display: "grid",
+              gridTemplateColumns: "repeat(auto-fill, minmax(250px, 1fr))",
+              // gridAutoRows: "1fr",
+            }}
+          >
+            {confessions.map((text, index) => (
               <motion.div
-                onClick={() => setSelectedCardId(null)}
-                className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
+                variants={itemVariants}
+                whileHover={{ scale: 1.1 }}
+                onClick={() => {
+                  setSelectedCardId(index);
+                }}
+                key={index}
+                layoutId={`card-${index}`}
+                className="text-gray-500 h-52 md:h-72 flex flex-col justify-center md:justify-center cursor-pointer text-center text-sm md:text-base lg:text-lg font-bold bg-white rounded-xl px-5 break-words whitespace-normal overflow-hidden"
               >
-                <motion.div
-                  layoutId={`card-${selectedCardId}`}
-                  className="flex flex-col justify-center text-center w-96 mx-6 lg:w-96 h-96 text-sm md:text-base lg:text-lg font-bold bg-white rounded-xl px-2 opacity-full break-words whitespace-normal"
-                >
-                  {confessions[selectedCardId]}
-                </motion.div>
+                {text}
               </motion.div>
-            )}
-          </AnimatePresence>
-        </motion.div>
+            ))}
+
+            <AnimatePresence>
+              {selectedCardId !== null && (
+                <motion.div
+                  onClick={() => setSelectedCardId(null)}
+                  className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
+                >
+                  <motion.div
+                    layoutId={`card-${selectedCardId}`}
+                    className="flex flex-col justify-center text-center w-96 mx-6 lg:w-96 h-96 text-sm md:text-base lg:text-lg font-bold bg-white rounded-xl px-2 opacity-full break-words whitespace-normal"
+                  >
+                    {confessions[selectedCardId]}
+                  </motion.div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </motion.div>
+        ) : (
+          <div className="flex flex-col justify-center h-full">
+            <p className="text-center font-bold text-white">
+              No confessions yet
+            </p>
+          </div>
+        )}
       </div>
       {/* </PageWrapper> */}
     </>

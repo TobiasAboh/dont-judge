@@ -1,25 +1,21 @@
 "use client";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { captureOwnerStack, useEffect, useState } from "react";
 import PageWrapper from "./pageWrapper";
 import userData from "../../data/userData.json";
 import { motion, animate, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
 import TimerDropdown from "@/components/timerDropdown";
+import LoadingScreen from "@/components/loadingScreen";
 
 export default function Home() {
   const [id, setId] = useState();
   const [username, setUsername] = useState();
   const [users, setUsers] = useState();
   const [timer, setTimer] = useState(1);
+  const [loading, setLoading] = useState(false);
 
   const router = useRouter();
-
-  // useEffect(() => {
-  //   fetch("../../data/userData.json")
-  //     .then((res) => res.json())
-  //     .then((data) => setUsers(data));
-  // }, []);
 
   const addUser = async (name) => {
     // console.log("Adding user:", name, "with timer:", timer);
@@ -27,28 +23,41 @@ export default function Home() {
       alert("Please enter a valid username");
       return;
     }
-    const response = await fetch(`/api/users/${name}/user`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ username: `${name.trim()}`, messages: [], timer: timer, startTime: Date.now(), duration: timer * 3600 }),
-    });
+    setLoading(true);
+    try {
+      const response = await fetch(`/api/users/${name}/user`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          username: `${name.trim()}`,
+          messages: [],
+          timer: timer,
+          startTime: Date.now(),
+          duration: timer * 3600,
+        }),
+      });
 
-    if (response.ok) {
-      const data = await response.json();
-      // setUsers(data.users);
-      if (!data.exist) {
-        // console.log("User added successfully:", data);
-        setId(`${data.newUser.username}`);
-        localStorage.setItem("username", data.newUser.username);
-        localStorage.setItem("timer", timer);
-        router.push(`/user/${data.newUser.username}`);
-      } else {
-        alert("Username already taken");
+      if (response.ok) {
+        const data = await response.json();
+        // setUsers(data.users);
+        if (!data.exist) {
+          // console.log("User added successfully:", data);
+          setId(`${data.newUser.username}`);
+          localStorage.setItem("username", data.newUser.username);
+          localStorage.setItem("timer", timer);
+          router.push(`/user/${data.newUser.username}`);
+        } else {
+          alert("Username already taken");
+        }
       }
+    } catch (error) {
+      console.error("Error adding user:", error);
+    }
+    finally{
+      setLoading(false)
     }
   };
-
-
+  if(loading) {return <LoadingScreen />}
   return (
     <>
       <header>
