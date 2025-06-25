@@ -149,13 +149,13 @@ export default function UserPage({ params }) {
 
         <motion.div
           variants={variants}
-          className="grid gap-5 justify-center pt-4 px-6 pb-5 border-t overflow-y-auto h-full"
+          className="grid gap-4 justify-start pt-4 px-6 pb-5 border-t overflow-y-auto max-h-[96vh]"
           initial="hidden"
           animate="show"
           style={{
-            display: "grid",
+            // display: "grid",
             gridTemplateColumns: "repeat(auto-fill, minmax(250px, 1fr))",
-            gridAutoRows: "1fr",
+            // gridAutoRows: "1fr",
           }}
         >
           {confessions.map((text, index) => (
