@@ -32,44 +32,44 @@ export default function MessagePage({ params }) {
   return (
     <>
       <PageWrapper>
-        
-        <form
-          onSubmit={sendMessage}
-          className="flex flex-col justify-start items-center gap-4 w-3/4 sm:5/6 lg:w-6/12 mx-auto mt-12 md:mt-20"
-        >
-          <h1 className="font-bold text-black text-xl md:text-5xl">Write Your Confession👀</h1>
-          <div className="relative w-full h-64 md:h-36">
-            <motion.textarea
-              value={confession}
-              maxLength={250}
-              onChange={(e) => setConfession(e.target.value)}
-              whileFocus={{ scale: 1.06 }}
-              transition={{ duration: 0.2 }}
-              type="text"
-              placeholder={`Tell ${username} your craziest confessions anonymously. Don't worry we don't judge`}
-              className="rounded-2xl border-2 p-6 w-full h-full lg:w-full shadow-xl"
-            />
-            <p className="absolute bottom-6 right-8 font-bold text-sm text-secondaryColour text-right">
-              {confession.length} / 250
-            </p>
-          </div>
+        <div className="flex flex-col justify-start items-center gap-4 w-3/4 sm:5/6 lg:w-6/12 mx-auto mt-6 md:mt-6">
+          <form onSubmit={sendMessage} className="w-full">
+            <h1 className="font-bold text-black text-xl md:text-5xl text-center">
+              Write Your Confession👀
+            </h1>
+            <div className="relative w-full h-64 md:h-36 mt-4">
+              <motion.textarea
+                value={confession}
+                maxLength={250}
+                onChange={(e) => setConfession(e.target.value)}
+                whileFocus={{ scale: 1.06 }}
+                transition={{ duration: 0.2 }}
+                type="text"
+                placeholder={`Tell ${username} your craziest confessions anonymously. Don't worry we don't judge`}
+                className="rounded-2xl border-2 p-6 w-full h-full lg:w-full shadow-xl"
+              />
+              <p className="absolute bottom-6 right-8 font-bold text-sm text-secondaryColour text-right">
+                {confession.length} / 250
+              </p>
+            </div>
 
-          <div className="flex justify-end w-full gap-2">
-            <motion.button
-              type="submit"
-              whileHover={{
-                scale: 1.06,
-                // backgroundColor: "rgba(100, 0, 100, 0)",
-              }}
-              transition={{ duration: 0.2 }}
-              className="text-white border rounded-xl px-5 py-2 bg-secondaryColour hover:bg-gray-400 hover:text-black"
-            >
-              Send <FiSend className="inline text-white ml-1" />
-            </motion.button>
-          </div>
+            <div className="flex justify-end w-full gap-2 mt-4">
+              <motion.button
+                type="submit"
+                whileHover={{
+                  scale: 1.06,
+                }}
+                transition={{ duration: 0.2 }}
+                className="text-white border rounded-xl px-5 py-2 bg-secondaryColour hover:bg-gray-400 hover:text-black"
+              >
+                Send Message
+              </motion.button>
+            </div>
+          </form>
+        </div>
+        <div className="p-4 flex justify-center">
           <ExtraInfo />
-        </form>
-        
+        </div>
       </PageWrapper>
     </>
   );

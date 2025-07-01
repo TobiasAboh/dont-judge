@@ -140,7 +140,7 @@ export default function UserPage({ params }) {
             </button>
             <div className="flex items-center gap-2 text-sm md:text-xl text-center font-bold text-black">
               Confessions
-              <div className="bg-secondaryColour rounded-full px-1 py-1 text-xs md:text-base text-white">{confessions.length}</div>
+              <div className="min-w-6 min-h-6 md:min-w-6 md:min-h-6 lg:min-w-8 lg:min-h-8 bg-secondaryColour rounded-full px-1 py-1 text-xs md:text-base text-white text-center">{confessions.length}</div>
             </div>
             <CountdownTimer
               hours={timer}
