@@ -2,7 +2,8 @@
 import React, { useEffect, useState } from "react";
 import PageWrapper from "@/app/pageWrapper";
 import { motion, AnimatePresence } from "framer-motion";
-
+import { FiSend} from "react-icons/fi";
+import ExtraInfo from "@/components/ExtraInfo";
 
 export default function MessagePage({ params }) {
   const [messageCount, setMessageCount] = useState(0);
@@ -24,48 +25,36 @@ export default function MessagePage({ params }) {
     if (response.ok) {
       setMessageCount(messageCount + 1);
       setConfession("");
-    }
-    else if(response.status === 404){
-      alert("This user has already ended their confession session.")
+    } else if (response.status === 404) {
+      alert("This user has already ended their confession session.");
     }
   };
   return (
     <>
-      <header>
-        <AnimatePresence>
-          <motion.h1
-            initial={{ opacity: 0, x: -50 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 50 }}
-            transition={{ duration: 0.5 }}
-            className="text-2xl md:text-4xl lg:text-5xl font-bold text-center"
-          >
-            We Listen We Don't Judge
-          </motion.h1>
-        </AnimatePresence>
-      </header>
       <PageWrapper>
+        
         <form
           onSubmit={sendMessage}
           className="flex flex-col justify-start items-center gap-4 w-3/4 sm:5/6 lg:w-6/12 mx-auto mt-20"
         >
-          <motion.textarea
-            value={confession}
-            maxLength={250}
-            onChange={(e) => setConfession(e.target.value)}
-            whileFocus={{ scale: 1.06 }}
-            transition={{ duration: 0.2 }}
-            type="text"
-            placeholder={`Tell ${username} your craziest confessions anonymously. Don't worry we don't judge👀`}
-            className="rounded-2xl border-2 p-6 w-full h-36 lg:w-full lg:h-48 shadow-xl"
-          />
-          <p className="text-sm text-gray-500 text-right">
-            {confession.length} / 250
-          </p>
-          <div className="flex justify-between w-full gap-2">
-            <motion.div className="bg-orange-400 rounded-2xl px-3 py-2">
-              Messages Sent: {messageCount}
-            </motion.div>
+          <h1 className="font-bold text-black text-xl md:text-5xl">Write Your Confession👀</h1>
+          <div className="relative w-full h-64 md:h-36">
+            <motion.textarea
+              value={confession}
+              maxLength={250}
+              onChange={(e) => setConfession(e.target.value)}
+              whileFocus={{ scale: 1.06 }}
+              transition={{ duration: 0.2 }}
+              type="text"
+              placeholder={`Tell ${username} your craziest confessions anonymously. Don't worry we don't judge`}
+              className="rounded-2xl border-2 p-6 w-full h-full lg:w-full shadow-xl"
+            />
+            <p className="absolute bottom-6 right-8 font-bold text-sm text-secondaryColour text-right">
+              {confession.length} / 250
+            </p>
+          </div>
+
+          <div className="flex justify-end w-full gap-2">
             <motion.button
               type="submit"
               whileHover={{
@@ -73,12 +62,14 @@ export default function MessagePage({ params }) {
                 // backgroundColor: "rgba(100, 0, 100, 0)",
               }}
               transition={{ duration: 0.2 }}
-              className="border rounded-xl px-5 py-2 bg-orange-400 hover:bg-white"
+              className="text-white border rounded-xl px-5 py-2 bg-secondaryColour hover:bg-gray-400 hover:text-black"
             >
-              Send ✔
+              Send <FiSend className="inline text-white ml-1" />
             </motion.button>
           </div>
+          <ExtraInfo />
         </form>
+        
       </PageWrapper>
     </>
   );

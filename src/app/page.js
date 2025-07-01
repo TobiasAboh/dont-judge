@@ -7,6 +7,7 @@ import { motion, animate, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
 import TimerDropdown from "@/components/timerDropdown";
 import LoadingScreen from "@/components/loadingScreen";
+import ExtraInfo from "@/components/ExtraInfo";
 
 export default function Home() {
   const [id, setId] = useState();
@@ -52,51 +53,54 @@ export default function Home() {
       }
     } catch (error) {
       console.error("Error adding user:", error);
-    }
-    finally{
-      setLoading(false)
+    } finally {
+      setLoading(false);
     }
   };
-  if(loading) {return <LoadingScreen />}
+  if (loading) {
+    return <LoadingScreen />;
+  }
   return (
-    <>
-      <header>
-        <AnimatePresence>
-          <motion.h1
-            initial={{ opacity: 0, x: -50 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 50 }}
-            transition={{ duration: 0.5 }}
-            className="text-2xl md:text-4xl lg:text-5xl font-bold text-center mb-36"
-          >
-            We Listen We Don't Judge
-          </motion.h1>
-        </AnimatePresence>
-      </header>
+    <div className="flex flex-col h-screen">
       <PageWrapper>
-        <div className="flex flex-col justify-center items-center gap-4 md:gap-2">
-          <div className="flex flex-col md:flex-row justify-center items-center gap-4 w-8/12 md:w-6/12 lg:w-5/12">
-            <motion.input
-              // whileHover={{ scale: 1.1 }}
-              onChange={(e) => setUsername(e.target.value)}
-              transition={{ duration: 0.5 }}
-              type="text"
-              placeholder="Create username to start"
-              className="rounded-3xl border-2 px-4 py-2 w-full shadow-xl text-sm"
-            ></motion.input>
-            <motion.button
-              onClick={() => addUser(username)}
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.9 }}
-              type="submit"
-              className="w-full md:w-auto rounded-3xl border-2 px-7 py-2 shadow-xl"
-            >
-              Start
-            </motion.button>
+        <div className="flex flex-col justify-end items-center gap-4 md:gap-2 w-full h-full">
+          <div className="flex flex-col justify-center items-center gap-4 w-full md:w-6/12 lg:w-5/12">
+            <h1 className="font-bold text-2xl md:text-4xl text-center">
+              Create a Link and
+              <br />
+              Share 👀
+              <span className="text-secondaryColour">(if you dare)</span>
+            </h1>
+            <p className="text-center text-xs md:text-sm w-[85%] md:w-[95%]">
+              Type in a username now to start getting those crazy confessions,
+              <br className="hidden lg:block" /> Read confessions. Laugh,
+              Make comments, No judging.
+            </p>
+            <div className="relative w-[80%] md:w-[80%]">
+              <motion.input
+                // whileHover={{ scale: 1.1 }}
+                onChange={(e) => setUsername(e.target.value)}
+                transition={{ duration: 0.5 }}
+                type="text"
+                placeholder="Create username to begin!"
+                className="rounded-xl border-2 pl-4 pr-20 py-2 w-full h-12 shadow-xl text-sm"
+              ></motion.input>
+              <motion.button
+                onClick={() => addUser(username)}
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+                type="submit"
+                className="bg-secondaryColour text-white absolute right-1 top-1 bottom-1 rounded-xl border-2 px-4 py-1 shadow-xl"
+              >
+                Start
+              </motion.button>
+            </div>
           </div>
+          <p className="font-bold">Set your link expiration time</p>
           <TimerDropdown setTimer={setTimer} />
+          <ExtraInfo />
         </div>
       </PageWrapper>
-    </>
+    </div>
   );
 }

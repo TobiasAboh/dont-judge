@@ -2,13 +2,14 @@
 import { motion, AnimatePresence, animate } from "framer-motion";
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import CountdownTimer from "@/components/countdownTimer";
 
 import LoadingScreen from "@/components/loadingScreen";
 
 const variants = {
   hidden: { opacity: 0 },
-  show: { opacity: 1, transition: { staggerChildren: 0.9 } },
+  show: { opacity: 1, transition: { staggerChildren: 0.2 } },
 };
 
 const itemVariants = {
@@ -16,7 +17,7 @@ const itemVariants = {
   show: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.6 },
+    transition: { duration: 0.4 },
   },
 };
 
@@ -104,43 +105,43 @@ export default function UserPage({ params }) {
   }
   return (
     <>
-      <header>
-        <AnimatePresence>
-          <motion.h1
-            initial={{ opacity: 0, x: -50 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 50 }}
-            transition={{ duration: 0.5 }}
-            className="text-2xl md:text-4xl lg:text-5xl font-bold text-center"
-          >
-            We Listen We Don't Judge
-          </motion.h1>
-        </AnimatePresence>
-      </header>
       {/* <PageWrapper> */}
-      <div className="flex flex-col w-full justify-center items-center gap-4 mt-8">
-        <motion.button
-          onTap={copyToCLipboard}
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.9 }}
-          type="submit"
-          className="rounded-3xl border-2 px-7 py-2 shadow-xl cursor-pointer"
-        >
-          {copied ? "Copied to Clipboard" : `Copy Link: ${username}`}
-        </motion.button>
+      <div className="flex flex-col w-full justify-center items-center gap-4">
+        <h1 className="font-bold text-lg md:text-3xl">Confessions</h1>
+        <p className="text-center text-xs md:text-sm w-[80%] md:w-[50%]">
+          Here's your link{" "}
+          <span className="text-secondaryColour">{username}</span>. Share it
+          with your friends!
+        </p>
+        <div className="flex justify-center items-center w-[80%] md:w-[50%] lg:w-[30%] bg-white rounded-xl px-4 py-2 shadow-xl">
+          <div className="w-full font-bold overflow-hidden text-ellipsis text-xs">
+            https://dontjudge.vercel.app/user/{username}/sendMessage
+          </div>
+          <motion.button
+            onTap={copyToCLipboard}
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}
+            type="submit"
+            className="rounded-xl border-2 px-4 py-2 shadow-xl cursor-pointer bg-secondaryColour text-white text-xs md:text-base w-[60%] font-bold"
+          >
+            {copied ? "Copied to Clipboard" : `Copy Link`}
+          </motion.button>
+        </div>
       </div>
-      <div className="flex flex-col mt-16 h-screen">
-        <div className="relative flex flex-row justify-center gap-4 border-b">
-          <h2 className="text-sm md:text-xl text-center font-bold text-white">
-            Confessions
-          </h2>
-          <div className="flex flex-row justify-center gap-3 md:gap-0 md:justify-between w-full absolute bottom-10 md:bottom-0">
+      <div className="flex flex-col h-screen">
+        {/* <div className="relative flex flex-row justify-center gap-4 border-b"> */}
+          <div className="flex flex-row justify-between gap-3 md:gap-0 md:justify-between w-full sm:w-[90%] md:w-[60%] mx-auto mt-4 border-b-2 border-black p-2">
             <button
               onClick={handleTimeUp}
-              className="bg-red-500 hover:bg-white text-xs md:text-sm px-2 rounded-3xl border-2"
+              className="flex items-center justify-content gap-2 font-bold text-secondaryColour hover:bg-white text-xs md:text-sm px-2 rounded-3xl"
             >
-              End Confession Session
+              <Image src="/exit.svg" alt="endSession" width={20} height={20} className="w-[18%] h-auto"/>
+              <p>End Session</p>
             </button>
+            <div className="flex items-center gap-2 text-sm md:text-xl text-center font-bold text-black">
+              Confessions
+              <div className="bg-secondaryColour rounded-full px-1 py-1 text-xs md:text-base text-white">{confessions.length}</div>
+            </div>
             <CountdownTimer
               hours={timer}
               minutes={0}
@@ -149,7 +150,7 @@ export default function UserPage({ params }) {
               onComplete={handleTimeUp}
             />
           </div>
-        </div>
+        {/* </div> */}
 
         {confessions.length > 0 ? (
           <motion.div
@@ -182,7 +183,7 @@ export default function UserPage({ params }) {
               {selectedCardId !== null && (
                 <motion.div
                   onClick={() => setSelectedCardId(null)}
-                  className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
+                  className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm"
                 >
                   <motion.div
                     layoutId={`card-${selectedCardId}`}

@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
+import { LuTimer } from "react-icons/lu";
 
 export default function CountdownTimer({
   hours,
@@ -66,7 +67,8 @@ export default function CountdownTimer({
 
   return (
     <>
-      <div className="px-2 z-10 rounded-3xl border-2 text-xs md:text-sm">
+      <div className="flex items-center gap-1 text-secondaryColour font-bold px-2 z-10 rounded-3xl border-2 text-xs md:text-sm">
+        <LuTimer />
         <p>{formatTime(timeLeft)}</p>
       </div>
     </>

@@ -7,8 +7,8 @@ import User from "@/models/User";
 
 const filePath = path.join(process.cwd(), "data", "userData.json");
 
-const convertDateToISO = () => {
-  return new Date(Date.now() + 18 * 60 * 60 * 1000);
+const convertDateToISO = (duration) => {
+  return new Date(Date.now() + duration * 1000);
 }
 
 export async function POST(request) {
@@ -25,7 +25,7 @@ export async function POST(request) {
     
     const user = await User.create({
       username,
-      expiresAfter: convertDateToISO(), // Set expiration based on duration
+      expiresAfter: convertDateToISO(duration), // Set expiration based on duration
       messages,
       timer,
       startTime,
