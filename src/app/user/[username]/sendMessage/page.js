@@ -35,7 +35,7 @@ export default function MessagePage({ params }) {
         
         <form
           onSubmit={sendMessage}
-          className="flex flex-col justify-start items-center gap-4 w-3/4 sm:5/6 lg:w-6/12 mx-auto mt-20"
+          className="flex flex-col justify-start items-center gap-4 w-3/4 sm:5/6 lg:w-6/12 mx-auto mt-12 md:mt-20"
         >
           <h1 className="font-bold text-black text-xl md:text-5xl">Write Your Confession👀</h1>
           <div className="relative w-full h-64 md:h-36">

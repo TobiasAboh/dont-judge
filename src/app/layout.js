@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 
 export const metadata = {
   title: "We Listen We Don't Judge",
-  description: "A platform for anonymous confessions and support",
+  description: "Send and receive anonymous confessions. No one will judge🤫",
 };
 
 export default function RootLayout({ children }) {
