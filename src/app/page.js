@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-import { captureOwnerStack, useEffect, useState } from "react";
+import { captureOwnerStack, use, useEffect, useState } from "react";
 import PageWrapper from "./pageWrapper";
 import userData from "../../data/userData.json";
 import { motion, animate, AnimatePresence } from "framer-motion";
@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import TimerDropdown from "@/components/timerDropdown";
 import LoadingScreen from "@/components/loadingScreen";
 import ExtraInfo from "@/components/ExtraInfo";
+import VisitCounter from "@/components/VisitCounter";
 
 export default function Home() {
   const [id, setId] = useState();
@@ -57,6 +58,8 @@ export default function Home() {
       setLoading(false);
     }
   };
+
+
   if (loading) {
     return <LoadingScreen />;
   }
@@ -98,6 +101,7 @@ export default function Home() {
           </div>
           <p className="font-bold">Set your link expiration time</p>
           <TimerDropdown setTimer={setTimer} />
+          {/* <VisitCounter /> */}
           <ExtraInfo />
         </div>
       </PageWrapper>

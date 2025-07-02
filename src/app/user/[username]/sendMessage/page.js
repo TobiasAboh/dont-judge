@@ -4,11 +4,24 @@ import PageWrapper from "@/app/pageWrapper";
 import { motion, AnimatePresence } from "framer-motion";
 import { FiSend} from "react-icons/fi";
 import ExtraInfo from "@/components/ExtraInfo";
+import VisitCounter from "@/components/VisitCounter";
 
 export default function MessagePage({ params }) {
   const [messageCount, setMessageCount] = useState(0);
   const [confession, setConfession] = useState("");
   const { username } = React.use(params);
+
+  useEffect(() => {
+    const incrementVisitCount = async () => {
+      try {
+        await fetch('/api/updateVisits', { method: 'GET' });
+      } catch (error) {
+        console.error('Error incrementing visit count:', error);
+      }
+    };
+
+    incrementVisitCount();
+  }, []);
 
   const sendMessage = async (e) => {
     if (!confession || confession.trim() === "") {
@@ -23,6 +36,11 @@ export default function MessagePage({ params }) {
     });
 
     if (response.ok) {
+      try {
+        await fetch('/api/confessions', { method: 'POST' });
+      } catch (error) {
+        console.error('Error incrementing confession count:', error);
+      }
       setMessageCount(messageCount + 1);
       setConfession("");
     } else if (response.status === 404) {
@@ -60,14 +78,15 @@ export default function MessagePage({ params }) {
                   scale: 1.06,
                 }}
                 transition={{ duration: 0.2 }}
-                className="text-white border rounded-xl px-5 py-2 bg-secondaryColour hover:bg-gray-400 hover:text-black"
+                className="flex items-center gap-1 text-white border rounded-xl px-5 py-2 bg-secondaryColour hover:bg-gray-400 hover:text-black"
               >
-                Send Message
+                <p>Send</p><FiSend />
               </motion.button>
             </div>
           </form>
         </div>
-        <div className="p-4 flex justify-center">
+        <div className="p-4 flex flex-col items-center justify-center">
+          {/* <VisitCounter /> */}
           <ExtraInfo />
         </div>
       </PageWrapper>
