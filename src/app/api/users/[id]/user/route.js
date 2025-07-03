@@ -1,8 +1,11 @@
 import path from "path";
 import { NextResponse } from "next/server";
+import { cookies } from "next/headers";
 import connectDB from "@/lib/mongodb";
 
+
 import User from "@/models/User";
+import { generateUniqueUsername } from "@/app/utils/generateUniquUsername";
 
 
 const filePath = path.join(process.cwd(), "data", "userData.json");
@@ -12,17 +15,19 @@ const convertDateToISO = (duration) => {
 }
 
 export async function POST(request) {
+  const cookieStore = await cookies();
   try {
     await connectDB();
     // console.log("connected to db");
-    const {username, messages, timer, startTime, duration} = await request.json();
+    const {baseUsername, messages, timer, startTime, duration} = await request.json();
     // console.log("Adding user:", username, "with timer:", startTime, duration);
-    const findUser = await User.findOne({ username: username });
+    const findUser = await User.findOne({ username: baseUsername });
 
     if (findUser) {
       return NextResponse.json({exist: !!findUser, message: "Username is already taken" });
     }
-    
+    const username = await generateUniqueUsername(baseUsername);
+    console.log("Generated unique username:", username);
     const user = await User.create({
       username,
       expiresAfter: convertDateToISO(duration), // Set expiration based on duration
@@ -32,20 +37,18 @@ export async function POST(request) {
       duration,
        // Set expiration based on duration
     });
-    
+    await cookieStore.set("username", username, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: 'lax',
+      path: "/",
+      maxAge: timer * 60 * 60,
+    });
+    // console.log("Generated unique username but after the fact:", user.username);
     return NextResponse.json({
       message: "User added successfully",
       newUser: user,
     }, {status: 201});
-    // const users = JSON.parse(fs.readFileSync(filePath, "utf-8"));
-    // const newUser = await request.json();
-    // users.push(newUser);
-    // fs.writeFileSync(filePath, JSON.stringify(users, null, 2));
-
-    // return NextResponse.json({
-    //   message: "User added successfully",
-    //   newUser,
-    // });
   } catch (error) {
     return NextResponse.json({
       message: "Error creating user",

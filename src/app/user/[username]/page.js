@@ -4,7 +4,6 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import CountdownTimer from "@/components/countdownTimer";
-
 import LoadingScreen from "@/components/loadingScreen";
 
 const variants = {
@@ -31,6 +30,12 @@ export default function UserPage({ params }) {
 
   const [confessions, setConfessions] = useState([]);
   const router = useRouter();
+
+  // const username = cookies().get("username")?.value;
+
+  // if (!username) {
+  //   redirect("/");
+  // }
 
   useEffect(() => {
     const fetchMessages = async () => {
@@ -130,26 +135,34 @@ export default function UserPage({ params }) {
       </div>
       <div className="flex flex-col h-screen">
         {/* <div className="relative flex flex-row justify-center gap-4 border-b"> */}
-          <div className="flex flex-row justify-between gap-3 md:gap-0 md:justify-between w-full sm:w-[90%] md:w-[60%] mx-auto mt-4 border-b-2 border-black p-2">
-            <button
-              onClick={handleTimeUp}
-              className="flex items-center justify-content gap-2 font-bold text-secondaryColour hover:bg-white text-xs md:text-sm px-2 rounded-3xl"
-            >
-              <Image src="/exit.svg" alt="endSession" width={20} height={20} className="w-[18%] h-auto"/>
-              <p>End Session</p>
-            </button>
-            <div className="flex items-center gap-2 text-sm md:text-xl text-center font-bold text-black">
-              Confessions
-              <div className="min-w-6 min-h-6 md:min-w-6 md:min-h-6 lg:min-w-8 lg:min-h-8 bg-secondaryColour rounded-full px-1 py-1 text-xs md:text-base text-white text-center">{confessions.length}</div>
-            </div>
-            <CountdownTimer
-              hours={timer}
-              minutes={0}
-              seconds={0}
-              timeUp={timeUp}
-              onComplete={handleTimeUp}
+        <div className="flex flex-row justify-between gap-3 md:gap-0 md:justify-between w-full sm:w-[90%] md:w-[60%] mx-auto mt-4 border-b-2 border-black p-2">
+          <button
+            onClick={handleTimeUp}
+            className="flex items-center justify-content gap-2 font-bold text-secondaryColour hover:bg-white text-xs md:text-sm px-2 rounded-3xl"
+          >
+            <Image
+              src="/exit.svg"
+              alt="endSession"
+              width={20}
+              height={20}
+              className="w-[18%] h-auto"
             />
+            <p>End Session</p>
+          </button>
+          <div className="flex items-center gap-2 text-sm md:text-xl text-center font-bold text-black">
+            Confessions
+            <div className="min-w-6 min-h-6 md:min-w-6 md:min-h-6 lg:min-w-8 lg:min-h-8 bg-secondaryColour rounded-full px-1 py-1 text-xs md:text-base text-white text-center">
+              {confessions.length}
+            </div>
           </div>
+          <CountdownTimer
+            hours={timer}
+            minutes={0}
+            seconds={0}
+            timeUp={timeUp}
+            onComplete={handleTimeUp}
+          />
+        </div>
         {/* </div> */}
 
         {confessions.length > 0 ? (
