@@ -21,7 +21,7 @@ export const generateImage = async (cardRef) => {
     cardClone.style.height = "384px";
     cardClone.style.transform = "scale(2.5)";
 
-    // Hide the footer in the cloned card so it doesn't appear in the image
+    //Hide the footer in the cloned card so it doesn't appear in the image
     if (cardClone.lastElementChild) {
         cardClone.lastElementChild.style.display = "none";
     }

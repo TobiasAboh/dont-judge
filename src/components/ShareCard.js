@@ -69,7 +69,7 @@ export default function ShareCard({ confession, layout, username }) {
       id="confession-card"
       layoutId={layout}
       onClick={(e) => e.stopPropagation()}
-      className="relative flex flex-col items-center bg-secondaryColour rounded-3xl p-1 w-[90%] h-[90%] lg:w-96 lg:h-96"
+      className="relative flex flex-col items-center bg-secondaryColour rounded-3xl p-1 w-[90%] lg:w-96 h-96"
     >
       <motion.div className="flex flex-col justify-center text-center w-full h-full text-sm md:text-xl lg:text-2xl font-bold bg-white rounded-3xl px-2 opacity-full break-words whitespace-normal">
         {confession}
