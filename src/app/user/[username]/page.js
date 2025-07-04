@@ -5,8 +5,7 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import CountdownTimer from "@/components/countdownTimer";
 import LoadingScreen from "@/components/loadingScreen";
-import { FiInstagram } from "react-icons/fi";
-import { PiWhatsappLogoBold } from "react-icons/pi";
+import { FaExpandAlt } from "react-icons/fa";
 import ShareCard from "@/components/ShareCard";
 
 // app/confession/[id]/page.jsx
@@ -193,9 +192,10 @@ export default function UserPage({ params }) {
                 }}
                 key={index}
                 layoutId={`card-${index}`}
-                className="text-gray-500 h-52 md:h-72 flex flex-col justify-center md:justify-center cursor-pointer text-center text-sm md:text-base lg:text-lg font-bold bg-white rounded-xl px-5 break-words whitespace-normal overflow-hidden"
+                className="relative text-gray-500 h-52 md:h-72 flex flex-col justify-center md:justify-center cursor-pointer text-center text-sm md:text-base lg:text-lg font-bold bg-white rounded-xl px-5 break-words whitespace-normal overflow-hidden"
               >
                 {text}
+                <FaExpandAlt className="absolute right-2 bottom-2 text-gray-500" />
               </motion.div>
             ))}
 

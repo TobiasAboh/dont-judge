@@ -52,7 +52,7 @@ const VisitCounter = () => {
     >
       <div className="flex items-center text-black gap-4 h-full">
         <h1 className={`${archivo.variable} font-archivo italic text-5xl text-secondaryColour font-extrabold`}>
-          {visitCount}
+          {visitCount === 0 ? <LoadingAnimation /> : visitCount}
         </h1>
         <p className="font-bold">
           People clicked the button

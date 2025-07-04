@@ -83,7 +83,7 @@ export async function PUT(req, { params }) {
     const { id } = await params;
     const { message } = await req.json();
 
-    const user = await User.findOneAndUpdate({ username: id }, { $push: { messages: message } });
+    const user = await User.findOneAndUpdate({ username: id }, { $push: { messages: { $each: [message], $position: 0 } } });
 
     if (!user) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
