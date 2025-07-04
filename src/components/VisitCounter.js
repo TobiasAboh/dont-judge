@@ -50,7 +50,7 @@ const VisitCounter = () => {
       </div>
       <div className="flex items-center gap-5 ">
         <motion.button
-          className="bg-secondaryColour w-[80%] text-white rounded-lg px-4 py-2 font-bold hover:bg-[linear-gradient(90deg,_red_30%,_white_100%)] hover:text-black"
+          className="bg-secondaryColour w-[80%] text-white rounded-lg px-4 py-2 font-bold hover:text-black"
           onClick={() => router.push("/")}
           animate={{
             // y: [0, -5, 0],

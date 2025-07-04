@@ -1,6 +1,8 @@
 // app/confession/[id]/opengraph-image.jsx
 import { ImageResponse } from 'next/og';
 
+
+
 export const runtime = 'edge';
 export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';
@@ -17,13 +19,18 @@ export default function OGImage({ params }) {
           height: '100%',
           alignItems: 'center',
           justifyContent: 'center',
-          background: '#fef3c7',
+          background: '#ffffff',
           fontSize: 48,
           fontWeight: 'bold',
           padding: '60px',
         }}
       >
-        Someone sent you a secret confession 👀
+        <img
+          src="http://dontjudge.vercel.app/Title3.svg" // replace with your real domain
+          width="600"
+          height="200"
+          alt="Title"
+        />
       </div>
     ),
     size

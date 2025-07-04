@@ -5,11 +5,13 @@ import { motion, AnimatePresence } from "framer-motion";
 import { FiSend} from "react-icons/fi";
 import ExtraInfo from "@/components/ExtraInfo";
 import VisitCounter from "@/components/VisitCounter";
+import LoadingAnimation from "@/components/loadingAnimation";
 
 export default function MessagePage({ params }) {
   const [messageCount, setMessageCount] = useState(0);
   const [confession, setConfession] = useState("");
   const { username } = React.use(params);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const incrementVisitCount = async () => {
@@ -29,6 +31,8 @@ export default function MessagePage({ params }) {
       return;
     }
     e.preventDefault();
+    setLoading(true);
+    try{
     const response = await fetch(`/api/users/${username}/user`, {
       method: "PUT",
       headers: { "Content-type": "application/json" },
@@ -43,9 +47,17 @@ export default function MessagePage({ params }) {
       }
       setMessageCount(messageCount + 1);
       setConfession("");
+      setLoading(false);
     } else if (response.status === 404) {
       alert("This user has already ended their confession session.");
+      setLoading(false);
     }
+  }catch(error){
+    console.error("Error sending message:", error);
+  }
+  finally{
+    setLoading(false);
+  }
   };
   return (
     <>
@@ -74,13 +86,14 @@ export default function MessagePage({ params }) {
             <div className="flex justify-end w-full gap-2 mt-4">
               <motion.button
                 type="submit"
+                disabled={loading}
                 whileHover={{
                   scale: 1.06,
                 }}
                 transition={{ duration: 0.2 }}
-                className="flex justify-center items-center font-semibold gap-3 md:gap-2 text-white border rounded-xl px-5 py-2 bg-secondaryColour hover:bg-gray-400 hover:text-black w-full md:w-auto text-center"
+                className={`flex justify-center items-center font-semibold text-white border rounded-xl px-5 py-2 ${loading ? 'bg-gray-400 cursor-not-allowed' : 'bg-secondaryColour hover:bg-gray-400'} hover:text-black w-full md:w-auto text-center`}
               >
-                <p>Send</p><FiSend className="text-sm" />
+                {loading ? <LoadingAnimation /> : <div className="flex items-center gap-3 md:gap-2"><p>Send</p><FiSend className="text-sm" /></div>}
               </motion.button>
             </div>
           </form>
