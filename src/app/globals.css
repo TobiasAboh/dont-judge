@@ -5,3 +5,7 @@
 body {
   background-image: url("/background.png");
 }
+
+.custom-radial {
+  background: radial-gradient(circle, white 0%, theme('colors.secondaryColour') 90%);
+}

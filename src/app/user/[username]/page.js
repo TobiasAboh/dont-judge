@@ -5,6 +5,13 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import CountdownTimer from "@/components/countdownTimer";
 import LoadingScreen from "@/components/loadingScreen";
+import { FiInstagram } from "react-icons/fi";
+import { PiWhatsappLogoBold } from "react-icons/pi";
+import ShareCard from "@/components/ShareCard";
+
+// app/confession/[id]/page.jsx
+
+
 
 const variants = {
   hidden: { opacity: 0 },
@@ -135,21 +142,21 @@ export default function UserPage({ params }) {
       </div>
       <div className="flex flex-col h-screen">
         {/* <div className="relative flex flex-row justify-center gap-4 border-b"> */}
-        <div className="flex flex-row justify-between gap-3 md:gap-0 md:justify-between w-full sm:w-[90%] md:w-[60%] mx-auto mt-4 border-b-2 border-black p-2">
+        <div className="flex flex-row justify-between gap-3 md:gap-0 md:justify-between w-full sm:w-[90%] md:w-[60%] mx-auto mt-4 border-b-2 border-black/10 p-2">
           <button
             onClick={handleTimeUp}
-            className="flex items-center justify-content gap-2 font-bold text-secondaryColour hover:bg-white text-xs md:text-sm px-2 rounded-3xl"
+            className="flex items-center flex-nowrap justify-content gap-2 font-bold text-secondaryColour hover:bg-white text-xs md:text-sm px-2 rounded-3xl"
           >
             <Image
               src="/exit.svg"
               alt="endSession"
               width={20}
               height={20}
-              className="w-[18%] h-auto"
+              className="w-[12%] sm:w-[18%] md:w-[12%] h-auto"
             />
             <p>End Session</p>
           </button>
-          <div className="flex items-center gap-2 text-sm md:text-xl text-center font-bold text-black">
+          <div className="flex items-center gap-2 text-xs sm:text-sm md:text-xl text-center font-bold text-black">
             Confessions
             <div className="min-w-6 min-h-6 md:min-w-6 md:min-h-6 lg:min-w-8 lg:min-h-8 bg-secondaryColour rounded-full px-1 py-1 text-xs md:text-base text-white text-center">
               {confessions.length}
@@ -198,20 +205,17 @@ export default function UserPage({ params }) {
                   onClick={() => setSelectedCardId(null)}
                   className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm"
                 >
-                  <motion.div
-                    layoutId={`card-${selectedCardId}`}
-                    className="flex flex-col justify-center text-center w-96 mx-6 lg:w-96 h-96 text-sm md:text-base lg:text-lg font-bold bg-white rounded-xl px-2 opacity-full break-words whitespace-normal"
-                  >
-                    {confessions[selectedCardId]}
-                  </motion.div>
+                  <ShareCard layout={`card-${selectedCardId}`} confession={confessions[selectedCardId]} username={username} />
                 </motion.div>
               )}
             </AnimatePresence>
           </motion.div>
         ) : (
           <div className="flex flex-col justify-center h-full">
-            <p className="text-center font-bold text-white">
-              No confessions yet
+            <p className="text-center font-bold text-black">
+              No confessions yet.
+              <br />
+              Share the link to get confessions.
             </p>
           </div>
         )}

@@ -78,15 +78,15 @@ export default function MessagePage({ params }) {
                   scale: 1.06,
                 }}
                 transition={{ duration: 0.2 }}
-                className="flex items-center gap-1 text-white border rounded-xl px-5 py-2 bg-secondaryColour hover:bg-gray-400 hover:text-black"
+                className="flex justify-center items-center font-semibold gap-3 md:gap-2 text-white border rounded-xl px-5 py-2 bg-secondaryColour hover:bg-gray-400 hover:text-black w-full md:w-auto text-center"
               >
-                <p>Send</p><FiSend />
+                <p>Send</p><FiSend className="text-sm" />
               </motion.button>
             </div>
           </form>
         </div>
         <div className="p-4 flex flex-col items-center justify-center">
-          {/* <VisitCounter /> */}
+          <VisitCounter />
           <ExtraInfo />
         </div>
       </PageWrapper>

@@ -1,4 +1,5 @@
 import { Geist, Geist_Mono } from "next/font/google";
+import { archivo } from "./fonts";
 import "./globals.css";
 import LoadingManager from "@/components/loadingManager";
 import Title from "@/components/title";
@@ -20,7 +21,7 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
+    <html lang="en" className={archivo.className}>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >

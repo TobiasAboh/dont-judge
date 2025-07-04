@@ -10,6 +10,9 @@ export default {
       colors: {
         secondaryColour: "#B73D58",
       },
+      fontFamily: {
+        archivo: ["var(--font-archivo)", "sans-serif"],
+      }
     },
   },
   plugins: [],

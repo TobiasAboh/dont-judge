@@ -15,7 +15,7 @@ export default function Home() {
   const [id, setId] = useState();
   const [username, setUsername] = useState();
   const [users, setUsers] = useState();
-  const [timer, setTimer] = useState(1);
+  const [timer, setTimer] = useState(24);
   const [loading, setLoading] = useState(false);
 
   const router = useRouter();
