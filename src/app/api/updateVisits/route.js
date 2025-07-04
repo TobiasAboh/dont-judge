@@ -5,14 +5,17 @@ import { NextResponse } from "next/server";
 export async function GET() {
   try {
     await connectDB();
-    // console.log("Just Visited");
-    const result = await Visit.findByIdAndUpdate(
-      "site_visits",
-      { $inc: { count: 1 } },
-      { new: true, upsert: true }
-    );
+    let visit = await Visit.findById("site_visits");
 
-    return NextResponse.json({ count: result.count });
+    if (visit) {
+      visit.count += 1;
+      await visit.save();
+    } else {
+      visit = new Visit();
+      await visit.save();
+    }
+
+    return NextResponse.json({ count: visit.count });
   } catch (error) {
     console.error('Error incrementing visit count:', error);
     return NextResponse.json(

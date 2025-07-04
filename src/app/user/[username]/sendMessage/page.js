@@ -13,17 +13,7 @@ export default function MessagePage({ params }) {
   const { username } = React.use(params);
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    const incrementVisitCount = async () => {
-      try {
-        await fetch('/api/updateVisits', { method: 'GET' });
-      } catch (error) {
-        console.error('Error incrementing visit count:', error);
-      }
-    };
 
-    incrementVisitCount();
-  }, []);
 
   const sendMessage = async (e) => {
     if (!confession || confession.trim() === "") {

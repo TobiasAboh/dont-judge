@@ -20,6 +20,18 @@ export default function Home() {
 
   const router = useRouter();
 
+  useEffect(() => {
+    const incrementVisitCount = async () => {
+      try {
+        await fetch("/api/updateVisits", { method: "GET" });
+      } catch (error) {
+        console.error("Error incrementing visit count:", error);
+      }
+    };
+
+    incrementVisitCount();
+  }, []);
+
   const addUser = async (name) => {
     // console.log("Adding user:", name, "with timer:", timer);
     if (!name || name.trim() === "") {

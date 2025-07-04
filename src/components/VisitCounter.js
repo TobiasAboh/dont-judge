@@ -5,9 +5,11 @@ import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { archivo } from "@/app/fonts";
 import Image from "next/image";
+import LoadingAnimation from "./loadingAnimation"; // Import the loading animation
 
 const VisitCounter = () => {
   const [visitCount, setVisitCount] = useState(0);
+  const [isLoading, setIsLoading] = useState(false); // Add loading state
   const router = useRouter();
 
   useEffect(() => {
@@ -25,6 +27,16 @@ const VisitCounter = () => {
 
     return () => clearInterval(interval);
   }, []);
+
+  const handleClick = async () => {
+    setIsLoading(true); // Set loading to true
+    try {
+      await fetch("/api/updateVisits");
+    } catch (error) {
+      console.error("Error updating visit count:", error);
+    }
+    router.push("/");
+  };
 
   return (
     <motion.div
@@ -50,8 +62,9 @@ const VisitCounter = () => {
       </div>
       <div className="flex items-center gap-5 ">
         <motion.button
-          className="bg-secondaryColour w-[80%] text-white rounded-lg px-4 py-2 font-bold hover:text-black"
-          onClick={() => router.push("/")}
+          className={`bg-secondaryColour ${isLoading ? 'w-auto' : 'w-[80%]'} text-white rounded-lg px-4 py-2 font-bold hover:text-black`}
+          onClick={handleClick}
+          disabled={isLoading} // Disable button when loading
           animate={{
             // y: [0, -5, 0],
             scale: [1, 1.1, 1],
@@ -62,7 +75,7 @@ const VisitCounter = () => {
             ease: "easeInOut",
           }}
         >
-          Get in on the fun!
+          {isLoading ? <LoadingAnimation /> : "Get in on the fun!"}
         </motion.button>
         <Image
           src="/swirly.svg"
