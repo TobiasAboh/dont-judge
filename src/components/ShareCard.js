@@ -42,10 +42,6 @@ export default function ShareCard({ confession, layout, username }) {
               });
             } catch (error) {
               console.error("Error sharing:", error);
-              window.open(
-                `https://wa.me/?text=${encodeURIComponent(message)}`,
-                "_blank"
-              );
             }
           }
         },
@@ -55,10 +51,6 @@ export default function ShareCard({ confession, layout, username }) {
     } else {
       alert(
         "Your browser doesn't support sharing images directly. You can download the image from the Instagram icon and share it manually."
-      );
-      window.open(
-        `https://wa.me/?text=${encodeURIComponent(message)}`,
-        "_blank"
       );
     }
   };
