@@ -1,5 +1,5 @@
 "use client";
-import html2canvas from "html2canvas";
+import { generateImage } from "./ImageGenerator";
 import { motion } from "framer-motion";
 import { FaShareAlt } from "react-icons/fa";
 import { FiInstagram } from "react-icons/fi";
@@ -9,37 +9,7 @@ import { useRef } from "react";
 export default function ShareCard({ confession, layout, username }) {
   const cardRef = useRef(null);
   const generateCardImage = async () => {
-    const card = cardRef.current;
-
-    // Create a temporary container
-    const container = document.createElement("div");
-    container.style.position = "absolute";
-    container.style.left = "-9999px";
-    container.style.top = "-9999px";
-    container.style.width = "1080px";
-    container.style.height = "1080px";
-    container.style.display = "flex";
-    container.style.justifyContent = "center";
-    container.style.alignItems = "center";
-    container.style.backgroundImage = "url(/background.png)";
-    container.style.backgroundSize = "cover";
-
-    const cardClone = card.cloneNode(true);
-    cardClone.style.width = "384px";
-    cardClone.style.height = "384px";
-    cardClone.style.transform = "scale(2.5)";
-    container.appendChild(cardClone);
-    document.body.appendChild(container);
-
-    const canvas = await html2canvas(container, {
-      logging: true,
-      useCORS: true,
-      width: 1080,
-      height: 1080,
-    });
-
-    document.body.removeChild(container);
-    return canvas;
+    return await generateImage(cardRef);
   };
 
   const handleDownload = async () => {
@@ -99,18 +69,20 @@ export default function ShareCard({ confession, layout, username }) {
       id="confession-card"
       layoutId={layout}
       onClick={(e) => e.stopPropagation()}
-      className="flex flex-col items-center bg-secondaryColour rounded-3xl p-1 w-[90%] lg:w-96 h-96"
+      className="relative flex flex-col items-center bg-secondaryColour rounded-3xl p-1 w-[90%] h-[90%] lg:w-96 lg:h-96"
     >
       <motion.div className="flex flex-col justify-center text-center w-full h-full text-sm md:text-xl lg:text-2xl font-bold bg-white rounded-3xl px-2 opacity-full break-words whitespace-normal">
         {confession}
       </motion.div>
       <div className="flex items-center justify-between w-full px-6 py-2 text-white font-bold">
-        <p>Share with your friends</p>
-        <div className="flex items-center gap-2">
-          {/* <a onClick={handleDownload}><FiInstagram className="w-[100%]" /></a>
-          <a onClick={handleShareWhatsApp}><PiWhatsappLogoBold className="w-[100%]" /></a> */}
-        <a onClick={handleShareWhatsApp}><FaShareAlt className="w-[100%]" /></a>
+        <div className="flex items-center">
+          <span>Share with your friends</span>
         </div>
+        {/* <div className="flex items-center"> */}
+          <a className="absolute right-6" onClick={handleShareWhatsApp}>
+            <FaShareAlt />
+          </a>
+        {/* </div> */}
       </div>
     </motion.div>
   );
