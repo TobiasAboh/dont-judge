@@ -4,10 +4,12 @@ import { motion } from "framer-motion";
 import { FaShareAlt } from "react-icons/fa";
 import { FiInstagram } from "react-icons/fi";
 import { PiWhatsappLogoBold } from "react-icons/pi";
+import { useRef } from "react";
 
 export default function ShareCard({ confession, layout, username }) {
+  const cardRef = useRef(null);
   const generateCardImage = async () => {
-    const card = document.getElementById("confession-card");
+    const card = cardRef.current;
 
     // Create a temporary container
     const container = document.createElement("div");
@@ -23,7 +25,9 @@ export default function ShareCard({ confession, layout, username }) {
     container.style.backgroundSize = "cover";
 
     const cardClone = card.cloneNode(true);
-    cardClone.style.transform = "scale(2.3)";
+    cardClone.style.width = "384px";
+    cardClone.style.height = "384px";
+    cardClone.style.transform = "scale(2.5)";
     container.appendChild(cardClone);
     document.body.appendChild(container);
 
@@ -91,12 +95,13 @@ export default function ShareCard({ confession, layout, username }) {
 
   return (
     <motion.div
+      ref={cardRef}
       id="confession-card"
       layoutId={layout}
       onClick={(e) => e.stopPropagation()}
       className="flex flex-col items-center bg-secondaryColour rounded-3xl p-1 w-[90%] lg:w-96 h-96"
     >
-      <motion.div className="flex flex-col justify-center text-center w-full h-full text-sm md:text-base lg:text-lg font-bold bg-white rounded-3xl px-2 opacity-full break-words whitespace-normal">
+      <motion.div className="flex flex-col justify-center text-center w-full h-full text-sm md:text-xl lg:text-2xl font-bold bg-white rounded-3xl px-2 opacity-full break-words whitespace-normal">
         {confession}
       </motion.div>
       <div className="flex items-center justify-between w-full px-6 py-2 text-white font-bold">
