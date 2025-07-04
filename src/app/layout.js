@@ -15,8 +15,25 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: "We Listen We Don't Judge",
+  title: "DontJudge — We Listen, We Don’t Judge",
+  icons: {
+    icon: '/favicon.png', // or .png or .ico
+  },
   description: "Send and receive anonymous confessions. No one will judge🤫",
+  metadataBase: new URL('https://dontjudge.vercel.app'),
+  openGraph: {
+      title: "We Listen We Don't Judge",
+      description: "Send and receive anonymous confessions. No one will judge🤫",
+      url: "https://dontjudge.vercel.app",
+      images: [
+        {
+          url: "/opengraph-image.png", // this will return PNG
+          width: 1200,
+          height: 630,
+        },
+      ],
+      type: "website",
+    },
 };
 
 export default function RootLayout({ children }) {

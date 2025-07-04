@@ -2,12 +2,12 @@ export async function generateMetadata({ params }) {
   const username = params.username;
 
   return {
-    title: "Anonymous Confession",
-    description: "Someone left a confession for you",
+    title: "We Listen We Don't Judge",
+    description: "Send and receive anonymous confessions. No one will judge🤫",
     openGraph: {
-      title: "Anonymous Confession",
-      description: "Someone left a confession for you",
-      url: `https://dont.com/confession/${username}/sendMessage`,
+      title: "We Listen We Don't Judge",
+      description: "Send and receive anonymous confessions. No one will judge🤫",
+      url: `https://dontjudge.vercel.app/confession/${username}/sendMessage`,
       images: [
         {
           url: `https://dontjudge.vercel.app/user/${username}/opengraph-image`, // this will return PNG
