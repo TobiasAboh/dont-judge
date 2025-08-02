@@ -1,5 +1,5 @@
 "use client";
-import { motion, AnimatePresence, animate } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
@@ -8,7 +8,6 @@ import LoadingScreen from "@/components/loadingScreen";
 import { FaExpandAlt } from "react-icons/fa";
 import ShareCard from "@/components/ShareCard";
 
-// app/confession/[id]/page.jsx
 
 
 
@@ -36,12 +35,6 @@ export default function UserPage({ params }) {
 
   const [confessions, setConfessions] = useState([]);
   const router = useRouter();
-
-  // const username = cookies().get("username")?.value;
-
-  // if (!username) {
-  //   redirect("/");
-  // }
 
   useEffect(() => {
     const fetchMessages = async () => {

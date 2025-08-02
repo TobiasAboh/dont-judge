@@ -1,15 +1,12 @@
 "use client";
-import Image from "next/image";
-import Cookies from "js-cookie";
-import { captureOwnerStack, use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import PageWrapper from "@/app/pageWrapper";
-import userData from "../../data/userData.json";
-import { motion, animate, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 import TimerDropdown from "@/components/timerDropdown";
 import LoadingScreen from "@/components/loadingScreen";
 import ExtraInfo from "@/components/ExtraInfo";
-import VisitCounter from "@/components/VisitCounter";
+
 
 export default function Home() {
   const [id, setId] = useState();
