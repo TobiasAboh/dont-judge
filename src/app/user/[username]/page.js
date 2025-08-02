@@ -54,6 +54,7 @@ export default function UserPage({ params }) {
         } else if (response.status === 404) {
           // alert("Confession session for this user has ended.");
           setTimeUp(true);
+          router.push("/");
         }
       } catch (error) {
         console.error("Error fetching messages", error);
