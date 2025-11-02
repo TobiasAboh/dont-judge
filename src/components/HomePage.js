@@ -112,7 +112,7 @@ export default function Home() {
           <p className="font-bold">Set your link expiration time</p>
           <TimerDropdown setTimer={setTimer} />
           {/* <VisitCounter /> */}
-          <ExtraInfo />
+          {/* <ExtraInfo /> */}
         </div>
       </PageWrapper>
     </div>
